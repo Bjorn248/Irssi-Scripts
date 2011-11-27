@@ -24,7 +24,7 @@ sub check_six {
 	my @out = @_;
 	my @who = split(/\s+/, $out[1]);
 	my $mask = $who[3];
-	if ($mask =~ m/98brov/) {
+	if ($mask =~ m/98brov/ || $mask =~ m/qimmtt/) {
 		push(@six, $who[5]);
 	}
 }
