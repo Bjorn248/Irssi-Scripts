@@ -2,26 +2,37 @@ use strict;
 use vars qw($VERSION %IRSSI);
 
 use Irssi;
+use Config;
 %IRSSI = (
 	authors => 'Bjorn Stange',
 	contact => 'bjorn248@gmail.com',
 	name => 'hl',
-	description => 'Create a notification using libnotify (specifically notify-send) if your nickname is used in the channel chat or if you recieve a private message.',
+	description => 'Create a notification using growlnotify or libnotify (specifically notify-send) if your nickname is used in the channel chat or if you recieve a private message.',
 );
 
 sub priv_msg {
 	my ($server, $msg, $nick, $address, $target) = @_;
 	my @date = split(/\s+/,`date`);
 	my $time = $date[3];
-	`notify-send "PM:  $time : $nick: $msg"`;
+    if ($Config{osname} =~ /darwin/) {
+        `growlnotify -t "PM from $nick at $time" -m "$msg"`;
+    }
+    else {
+        `notify-send "PM:  $time : $nick: $msg"`;
+    }
 }
 
 sub highlight {
         my ($dest, $text, $stripped) = @_;
         if ($dest->{level} & MSGLEVEL_HILIGHT) {
 		my @date = split(/\s+/,`date`);
-		my $time = $date[3]; 
+		my $time = $date[3];
+        if ($Config{osname} =~ /darwin/) {
+	     	`growlnotify -t "$dest->{target}:  $time" -m "$stripped"`;
+        }
+        else {
 	     	`notify-send "$dest->{target}:  $time : $stripped"`;
+        }
 	}
 }
 
