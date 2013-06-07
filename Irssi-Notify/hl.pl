@@ -10,11 +10,20 @@ use Config;
 	description => 'Create a notification using growlnotify or libnotify (specifically notify-send) if your nickname is used in the channel chat or if you recieve a private message.',
 );
 
+my $isMac;
+
+if ($Config{osname} =~ /darwin/) {
+    $isMac = 1;
+}
+else {
+    $isMac = 0;
+}
+
 sub priv_msg {
 	my ($server, $msg, $nick, $address, $target) = @_;
 	my @date = split(/\s+/,`date`);
 	my $time = $date[3];
-    if ($Config{osname} =~ /darwin/) {
+    if ($isMac) {
         `growlnotify -t "PM from $nick at $time" -m "$msg"`;
     }
     else {
@@ -27,7 +36,7 @@ sub highlight {
         if ($dest->{level} & MSGLEVEL_HILIGHT) {
 		my @date = split(/\s+/,`date`);
 		my $time = $date[3];
-        if ($Config{osname} =~ /darwin/) {
+        if ($isMac) {
 	     	`growlnotify -t "$dest->{target}:  $time" -m "$stripped"`;
         }
         else {
