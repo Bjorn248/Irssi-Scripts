@@ -1,5 +1,6 @@
 use strict;
 use vars qw($VERSION %IRSSI);
+use IPC::System::Simple qw(systemx);
 
 use Irssi;
 use Config;
@@ -24,10 +25,10 @@ sub priv_msg {
 	my @date = split(/\s+/,`date`);
 	my $time = $date[3];
     if ($isMac) {
-        `growlnotify -t "PM from $nick at $time" -m "$msg"`;
+        systemx("growlnotify", ("-t", "PM from $nick at $time", "-m", $msg))
     }
     else {
-        `notify-send "PM:  $time : $nick: $msg"`;
+        systemx("notify-send", ("PM:  $time : $nick: $msg"))
     }
 }
 
@@ -37,10 +38,10 @@ sub highlight {
 		my @date = split(/\s+/,`date`);
 		my $time = $date[3];
         if ($isMac) {
-	     	`growlnotify -t "$dest->{target}:  $time" -m "$stripped"`;
+            systemx("growlnotify", ("-t", "$dest->{target}:  $time", "-m", $stripped))
         }
         else {
-	     	`notify-send "$dest->{target}:  $time : $stripped"`;
+            systemx("notify-send", ("$dest->{target}:  $time : $stripped"))
         }
 	}
 }
