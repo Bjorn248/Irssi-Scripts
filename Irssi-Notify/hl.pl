@@ -4,10 +4,10 @@ use vars qw($VERSION %IRSSI);
 use Irssi;
 use Config;
 %IRSSI = (
-	authors => 'Bjorn Stange',
-	contact => 'bjorn248@gmail.com',
-	name => 'hl',
-	description => 'Create a notification using osascript (yosemite and up I believe) or libnotify (specifically notify-send) if your nickname is used in the channel chat or if you recieve a private message.',
+    authors => 'Bjorn Stange',
+    contact => 'bjorn248@gmail.com',
+    name => 'hl',
+    description => 'Create a notification using osascript (yosemite and up I believe) or libnotify (specifically notify-send) if your nickname is used in the channel chat or if you recieve a private message.',
 );
 
 my $isMac;
@@ -20,9 +20,9 @@ else {
 }
 
 sub priv_msg {
-	my ($server, $msg, $nick, $address, $target) = @_;
-	my @date = split(/\s+/,`date`);
-	my $time = $date[3];
+    my ($server, $msg, $nick, $address, $target) = @_;
+    my @date = split(/\s+/,`date`);
+    my $time = $date[3];
     if ($isMac) {
         `osascript -e 'display notification "$msg" with title "PM from $nick at $time"'`;
     }
@@ -34,15 +34,15 @@ sub priv_msg {
 sub highlight {
         my ($dest, $text, $stripped) = @_;
         if ($dest->{level} & MSGLEVEL_HILIGHT) {
-		my @date = split(/\s+/,`date`);
-		my $time = $date[3];
+        my @date = split(/\s+/,`date`);
+        my $time = $date[3];
         if ($isMac) {
-	     	`osascript -e 'display notification "$stripped" with title "$dest->{target}:  $time"'`;
+            `osascript -e 'display notification "$stripped" with title "$dest->{target}:  $time"'`;
         }
         else {
-	     	`notify-send "$dest->{target}:  $time : $stripped"`;
+            `notify-send "$dest->{target}:  $time : $stripped"`;
         }
-	}
+    }
 }
 
 Irssi::signal_add('message private', 'priv_msg');
