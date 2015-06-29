@@ -24,7 +24,7 @@ sub priv_msg {
     my @date = split(/\s+/,`date`);
     my $time = $date[3];
     if ($isMac) {
-        `osascript -e 'display notification "$msg" with title "PM from $nick at $time"'`;
+        `osascript -e \'display notification "$msg" with title "PM from $nick at $time"\'`;
     }
     else {
         `notify-send "PM:  $time : $nick: $msg"`;
@@ -37,7 +37,7 @@ sub highlight {
         my @date = split(/\s+/,`date`);
         my $time = $date[3];
         if ($isMac) {
-            `osascript -e 'display notification "$stripped" with title "$dest->{target}:  $time"'`;
+            `osascript -e \'display notification "$stripped" with title "$dest->{target}:  $time"\'`;
         }
         else {
             `notify-send "$dest->{target}:  $time : $stripped"`;
