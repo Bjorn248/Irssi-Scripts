@@ -3,6 +3,8 @@ use vars qw($VERSION %IRSSI);
 
 use Irssi;
 use Config;
+use lib '/Users/bstange/perl5/lib/perl5';
+use IPC::System::Simple qw(run);
 %IRSSI = (
     authors => 'Bjorn Stange',
     contact => 'bjorn248@gmail.com',
@@ -24,7 +26,18 @@ sub priv_msg {
     my @date = split(/\s+/,`date`);
     my $time = $date[3];
     if ($isMac) {
-        `osascript -e \'display notification "$msg" with title "PM from $nick at $time"\'`;
+		$msg =~s/(")/\\\\$1/g;
+		my $command = "osascript -e \"display notification ";
+		my $notification_message = "\"$msg\" with title \"PM from $nick at $time\"";
+		$notification_message =~s/(")/\\$1/g;
+		my $command = $command . $notification_message . "\"";
+		eval {
+			run($command);
+		};
+
+		if ($@) {
+			print "Something went wrong - $@\n";
+		}
     }
     else {
         `notify-send "PM:  $time : $nick: $msg"`;
@@ -37,7 +50,19 @@ sub highlight {
         my @date = split(/\s+/,`date`);
         my $time = $date[3];
         if ($isMac) {
-            `osascript -e \'display notification "$stripped" with title "$dest->{target}:  $time"\'`;
+
+		$stripped =~s/(")/\\\\$1/g;
+		my $command = "osascript -e \"display notification ";
+		my $notification_message = "\"$stripped\" with title \"$dest->{target}: $time\"";
+		$notification_message =~s/(")/\\$1/g;
+		my $command = $command . $notification_message . "\"";
+		eval {
+			run($command);
+		};
+
+		if ($@) {
+			print "Something went wrong - $@\n";
+		}
         }
         else {
             `notify-send "$dest->{target}:  $time : $stripped"`;
